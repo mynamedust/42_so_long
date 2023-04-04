@@ -65,18 +65,16 @@ int	ft_linecount(char *str)
 
 	i = 0;
 	count = 0;
-	while (str[i]  && str[i] == '\n')
-	{
+	while (str[i] == '\n' || (str[i] >= '\t' && str[i] <= '\r'))
 		i++;
-		printf("asdasd");
-	}
 	while (str[i])
 	{
-		if (str[i] == '\n' && str[i + 1] != '\0' && str[i + 1] != '\n')
+		if (str[i] == '\n')
 			count++;
+		if (str[i] == '\n' && str[i + 1] == '\r')
+			break ;
 		i++;
 	}
-	printf("%d\n", count);
 	return (count);
 }
 
@@ -86,12 +84,12 @@ char	*ft_getline(char *str)
 	char	*line;
 
 	i = 0;
-	while (str[i] && str[i] != '\n')
+	while (str[i] && str[i] != '\n' && str[i] != '\r')
 		i++;
 	line = malloc (i + 1);
 	line[i] = '\0';
 	i = 0;
-	while (*str && *str != '\n')
+	while (*str && *str != '\n' && str[i] != '\r')
 	{
 		line[i] = *str;
 		i++;
@@ -118,33 +116,53 @@ char	**ft_mapsplit(char	*str)
 	}
 	while (*str)
 	{
-		while (*str && *str == '\n')
+		while (*str && (*str == '\n' || *str == '\r'))
 			str++;
-		if (*str && *str != '\n')
+		if (*str && *str != '\n' && *str != '\r')
 			map[i++] = ft_getline(str);
-		while (*str && *str != '\n')
+		while (*str && *str != '\n' && *str != '\r')
 			str++;
 	}
 	map[i] = NULL;
 	return (map);
 }
 
+char	*ft_chrvalid(char **map)
+{
+}
+
+char	*ft_mapvalid(char	**map)
+{
+	char	*message;
+
+	if (message = ft_chrvalid(map))
+		return (message);
+	if (message = ft_rectangvalid(map))
+		return (message);
+	if (message = ft_wallvalid(map));
+		return (message);
+	if (message = ft_pathvalid(map));
+		return (message);
+	return (NULL);
+}
+
 int	main(int argc, char **argv)
 {
 	char	**map;
 	char	*buff;
-	int i = 0;
+	char	*validate;
 
+	int i = 0;
 	if (argc == 2)
 	{
 		buff = ft_mapread(argv[1]);
-		// printf("%s\n", buff);
 		map = ft_mapsplit(buff);
-		while (map[i])
-		{
-			printf("%s\n", map[i]);
-			i++;
-		}
+		validate = ft_mapvalid(map);
+		// while (map[i])
+		// {
+		// 	printf("%s\n", map[i]);
+		// 	i++;
+		// }
 	}
 	return (0);
 }
