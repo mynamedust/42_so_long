@@ -1,10 +1,12 @@
+#include "so_long.h"
+
 int	ft_open(char *file)
 {
 	int	fd;
 
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		perror("Open Error. Open failed on input file");	
+		perror("Open Error. Open failed on input file");
 	return (fd);
 }
 

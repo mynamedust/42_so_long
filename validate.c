@@ -3,8 +3,9 @@
 char	*ft_chrvalid(char **map)
 {
 	int		j;
-	v_chars list = {0, 0, 0};
+	t_chars list;
 
+	list = (t_chars){0};
 	j = 0;
 	while (*map)
 	{
@@ -71,6 +72,45 @@ char	*ft_rectangvalid(char **map)
 	return (NULL);
 }
 
+void	fill(char **map, t_point point)
+{
+	if (point.x < 0 || point.x >= ft_strlen(map[point.y]) || point.y < 0 || map[point.y] == NULL 
+		|| !(map[point.y][point.x] == 'C' || map[point.y][point.x] == '0'
+		|| map[point.y][point.x] == 'E' || map[point.y][point.x] == 'P'))
+		return ;
+	map[point.y][point.x] += 5;
+	fill(map, (t_point){point.x - 1, point.y});
+	fill(map, (t_point){point.x, point.y - 1});
+	fill(map, (t_point){point.x, point.y + 1});
+	fill(map, (t_point){point.x + 1, point.y});
+}
+
+char	*ft_pathvalid(char **map)
+{
+	int		e;
+	t_point	p;
+
+	e = 0;
+	p = (t_point){0};
+	while (map[p.y])
+	{
+		while (map[p.y][p.x])
+		{
+			if (map[p.y][p.x] == 'P')
+				break ;
+			p.x++;
+		}
+		if (map[p.y][p.x] == 'P')
+			break ;
+		p.x = 0;
+		p.y++;
+	}
+	fill(map, p);
+	if (ft_mapchr(map, 'C') || ft_mapchr(map, 'E'))
+		return ("Path validation failed");
+	return (NULL);
+}
+
 char	*ft_mapvalid(char	**map)
 {
 	char	*message;
@@ -81,48 +121,7 @@ char	*ft_mapvalid(char	**map)
 		return (message);
 	if ((message = ft_rectangvalid(map)) != NULL)
 		return (message);
-	// if (message = ft_pathvalid(map))
-	// 	return (message);
+	if ((message = ft_pathvalid(map)) != NULL)
+		return (message);
 	return (NULL);
 }
-
-// typedef struct	s_point
-// {
-// 	int			x;
-// 	int			y;
-// }				t_point;
-
-// void	fill(char **tab, t_point size, t_point point, char f_chr)
-// {
-// 	if (point.x < 0 || point.x >= size.x || point.y < 0 || point.y >= size.y 
-// 		|| tab[point.y][point.x] != f_chr)
-// 		return ;
-// 	tab[point.y][point.x] = 'F';
-// 	fill(tab, size, (t_point){point.x - 1, point.y}, f_chr);
-// 	fill(tab, size, (t_point){point.x, point.y - 1}, f_chr);
-// 	fill(tab, size, (t_point){point.x, point.y + 1}, f_chr);
-// 	fill(tab, size, (t_point){point.x + 1, point.y}, f_chr);
-// }
-
-// void	ft_pathvalid(char **map)
-// {
-// 	int		e;
-// 	t_point	p;
-
-// 	e = 0;
-// 	p = {0, 0};
-// 	while (map[p.y])
-// 	{
-// 		while (map[p.y][p.x])
-// 		{
-// 			if (map[p.y][p.x] == 'P')
-// 				break ;
-// 			p.x++;
-// 		}
-// 		if (map[p.y][p.x] == 'P')
-// 			break ;
-// 		p.x = 0;
-// 		p.y++;
-// 	}
-// 	fill(tab, size, begin, tab[begin.y][begin.x]);
-// }
