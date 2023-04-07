@@ -20,6 +20,15 @@ typedef struct	s_point
 	int			y;
 }				t_point;
 
+typedef struct	s_vars {
+	void	*mlx;
+	void	*win;
+	int 	x;
+	int 	y;
+	void	*img;
+	void	*empty_img;
+}				t_vars;
+
 char	*ft_chrvalid(char **map);
 char	*ft_wallvalid(char **map);
 char	*ft_rectangvalid(char **map);
