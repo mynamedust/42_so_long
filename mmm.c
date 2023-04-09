@@ -62,4 +62,3 @@ int	main()
 	mlx_loop(vars.mlx);
 	return (0);
 }
-	

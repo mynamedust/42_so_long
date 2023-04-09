@@ -29,7 +29,7 @@ char	*ft_chrvalid(char **map)
 	return (NULL);
 }
 
-char	*ft_wallvalid(char **map)
+char	*ft_wallvalid(t_vars *vars, char **map)
 {
 	int	j;
 	int	i;
@@ -48,9 +48,11 @@ char	*ft_wallvalid(char **map)
 				return ("The map must be closed by walls.");
 			j++;
 		}
+		vars->mapsize.x = j;
 		j = 0;
 		i++;
 	}
+	vars->mapsize.y = i;
 	return (NULL);
 }
 
@@ -111,13 +113,13 @@ char	*ft_pathvalid(char **map)
 	return (NULL);
 }
 
-char	*ft_mapvalid(char	**map)
+char	*ft_mapvalid(t_vars *vars, char	**map)
 {
 	char	*message;
 
 	if ((message = ft_chrvalid(map)) != NULL)
 		return (message);
-	if ((message = ft_wallvalid(map)) != NULL)
+	if ((message = ft_wallvalid(vars, map)) != NULL)
 		return (message);
 	if ((message = ft_rectangvalid(map)) != NULL)
 		return (message);
