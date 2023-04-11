@@ -6,22 +6,81 @@
 /*   By: almeliky <almeliky@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 21:54:23 by almeliky          #+#    #+#             */
-/*   Updated: 2023/04/09 22:43:14 by almeliky         ###   ########.fr       */
+/*   Updated: 2023/04/11 22:43:47 by almeliky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+int	move_check(int x, int y, t_vars *v)
+{
+	if (v.map[y][x] == '1')
+		return (0);
+	if (v->map[y][x] != 'J')
+		return (1);
+	if (v->coins > 0)
+		return (0);
+	exit(0);
+}
+
+void	player_action(int keycode, t_vars *v)
+{
+	if (keycode == 13 && !move_check(v->y - 1, v->x, v))
+		move_to(v->y - 1, v->x, v);
+    else if (keycode == 1 && !move_check(v->y + 1, v->x, v))
+        move_to(v->y + 1, v->x, v);
+    else if (keycode == 0 && !move_check(v->y, v->x - 1, v))
+        move_to(v->y, v->x - 1, v);
+    else if (keycode == 2 &&  && !move_check(v->y, v->x + 1, v))
+        move_to(v->y, v->x + 1, v);
+}
+
 int	handle_keypress(int keycode, t_vars *vars)
 {
-	(void)vars;
-	if (keycode == 53)
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.back, vars->x * 50, vars->y * 50);
+	if (keycode == 13 || keycode == 1 || keycode == 0 || keycode == 2 || keycode == 53)
+		player_action(keycode, vars);
+	else if (keycode == 53)
 		exit(0);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.player, vars->x * 50, vars->y * 50);
 	return (0);
 }
 
-void	*select_txtr(int c, int x, int y, t_point s)
-{}
+void	*select_txtr(int c, int x, int y, t_vars s)
+{
+	if (c == '5' || c == 'U' || c == 'H')
+		return (s.textures.back);
+	if (c == 'J' && s.coins > 0)
+		return (s.textures.portal_off);
+	if (c == 'J' && s.coins == 0)
+		return (s.textures.portal_on);
+	if (c == '1')
+	{
+		if (y == 0 && x != 0 && x != s.mapsize.x - 1)
+		{
+			if (s.map[y + 1][x] == '1')
+				return (s.textures.in_wall);
+			return (s.textures.t_wall);
+		}
+		if (y == s.mapsize.y - 1 && x != 0 && x != s.mapsize.x - 1)
+			return (s.textures.b_wall);
+		if (x == 0)
+		{
+			if (y == s.mapsize.y - 1)
+				return (s.textures.lb_wall);
+			return (s.textures.l_wall);
+		}
+		if (x == s.mapsize.x - 1)
+		{
+			if (y == s.mapsize.y - 1)
+				return (s.textures.rb_wall);
+			return (s.textures.r_wall);
+		}
+		if (s.map[y + 1][x] != '1')
+			return (s.textures.b_wall);
+	}
+	return (s.textures.in_wall);
+}
 
 int	maprender(t_vars vars)
 {
@@ -34,15 +93,21 @@ int	maprender(t_vars vars)
 	{
 		while (vars.map[y][x])
 		{
-			mlx_put_image_to_window(vars.mlx, vars.win, vars.textures.in_wall,
-				50 * x, 50 * y);
-			point.x++;
+			mlx_put_image_to_window(vars.mlx, vars.win,
+				select_txtr(vars.map[y][x], x, y, vars), 50 * x, 50 * y);
+			if (vars.map[y][x] == 'H')
+			{
+				mlx_put_image_to_window(vars.mlx, vars.win,
+					vars.textures.flask, 50 * x, 50 * y);
+			}
+			if (vars.map[y][x] == 'U')
+				mlx_put_image_to_window(vars.mlx, vars.win,
+					vars.textures.player, 50 * x, 50 * y);
+			x++;
 		}
 		x = 0;
 		y++;
 	}
-	mlx_hook(vars.win, 2, 1L << 0, handle_keypress, &vars);
-	mlx_loop(vars.mlx);
 	return (0);
 }
 
@@ -58,6 +123,8 @@ void	paths_init(t_texture *textures)
 	textures->paths[7] = "./textures/back.xpm";
 	textures->paths[8] = "./textures/portalon.xpm";
 	textures->paths[9] = "./textures/portaloff.xpm";
+	textures->paths[10] = "./textures/flask.xpm";
+	textures->paths[11] = "./textures/player.xpm";
 }
 
 void	textures_init(t_vars vars, t_texture *textures)
@@ -85,16 +152,25 @@ void	textures_init(t_vars vars, t_texture *textures)
 			&img_wd, &img_hg);
 	textures->portal_off = mlx_xpm_file_to_image(vars.mlx, textures->paths[9],
 			&img_wd, &img_hg);
+	textures->flask = mlx_xpm_file_to_image(vars.mlx, textures->paths[10],
+			&img_wd, &img_hg);
+	textures->player = mlx_xpm_file_to_image(vars.mlx, textures->paths[11],
+			&img_wd, &img_hg);
 }
 
 void	game_init(t_vars *vars)
 {
 	vars->mlx = mlx_init();
-	vars->win = mlx_new_window(vars->mlx, 1920, 1080, "so_long");
+	vars->win = mlx_new_window(vars->mlx, vars->mapsize.x * 50, vars->mapsize.y * 50, "so_long");
 	paths_init(&vars->textures);
 	textures_init(*vars, &vars->textures);
 	maprender(*vars);
 }
+
+// void	handle_events(t_vars *vars)
+// {
+
+// }
 
 int	main(int argc, char **argv)
 {
@@ -110,6 +186,9 @@ int	main(int argc, char **argv)
 		if (validate)
 			printf("%s\n", validate);
 		game_init(&vars);
+		printf("%d - y, %d - x", vars.y, vars.x);
+		mlx_hook(vars.win, 2, 1L << 0, handle_keypress, &vars);
+		mlx_loop(vars.mlx);
 	}
 	return (0);
 }

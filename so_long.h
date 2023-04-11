@@ -34,7 +34,7 @@ typedef struct s_point
 
 typedef struct s_texture
 {
-	char	*paths[10];
+	char	*paths[12];
 	void	*in_wall;
 	void	*t_wall;
 	void	*l_wall;
@@ -45,6 +45,8 @@ typedef struct s_texture
 	void	*back;
 	void	*portal_on;
 	void	*portal_off;
+	void	*flask;
+	void	*player;
 }	t_texture;
 
 typedef struct s_vars
@@ -53,6 +55,8 @@ typedef struct s_vars
 	void		*win;
 	char		**map;
 	int			coins;
+	int			x;
+	int			y;
 	t_texture	textures;
 	t_point		mapsize;
 	t_point		player_pos;
@@ -70,7 +74,7 @@ int		ft_linecount(char *str);
 char	*ft_getline(char *str);
 char	**ft_mapsplit(char	*str);
 char	*ft_mapchr(char **map, int c);
-void	fill(char **map, t_point point);
-char	*ft_pathvalid(char **map);
+void	fill(t_vars *vars, char **map, t_point point);
+char	*ft_pathvalid(t_vars *vars, char **map);
 
 #endif
