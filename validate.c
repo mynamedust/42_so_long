@@ -1,28 +1,27 @@
 #include "so_long.h"
 
-char	*ft_chrvalid(char **map)
+char	*ft_chrvalid(char **map, int j, int i)
 {
-	int		j;
 	t_chars list;
 
 	list = (t_chars){0};
-	j = 0;
-	while (*map)
+	while (map[i])
 	{
-		while ((*map)[j])
+		while (map[i][j])
 		{
-			if ((*map)[j] == 'E')
+			if (map[i][j] == 'E')
 				list.e += 1;
-			else if ((*map)[j] == 'P')
+			else if (map[i][j] == 'P')
 				list.p += 1;
-			else if ((*map)[j] == 'C')
+			else if (map[i][j] == 'C')
 				list.c += 1;
-			else if ((*map)[j] != '0' && (*map)[j] != '1')
+			else if (map[i][j] != '\0' && map[i][j] != '0' && map[i][j] != '1'
+				&& map[i][j] != 'S')
 				return ("Invalid input format.");
 			j++;
 		}
 		j = 0;
-		map++;
+		i++;
 	}
 	if (list.e != 1 || list.p != 1 || list.c < 1)
 		return ("Invalid input format.");
@@ -67,10 +66,11 @@ char	*ft_rectangvalid(char **map)
 
 	j = 0;
 	len = ft_strlen(*map);
-	while (map[j])
+	while (*map)
 	{
-		if (len != ft_strlen(map[j]))
-			return ("Invalid input format.");
+		if (len != ft_strlen(*map))
+			return ("Invalid input format.aaa");
+		map++;
 		j++;
 	}
 	if (j < 2 || len < 2)
@@ -122,8 +122,8 @@ char	*ft_pathvalid(t_vars *vars,char **map)
 char	*ft_mapvalid(t_vars *vars, char	**map)
 {
 	char	*message;
-
-	if ((message = ft_chrvalid(map)) != NULL)
+	
+	if ((message = ft_chrvalid(map, 0, 0)) != NULL)
 		return (message);
 	if ((message = ft_wallvalid(vars, map)) != NULL)
 		return (message);

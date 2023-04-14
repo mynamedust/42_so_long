@@ -1,7 +1,7 @@
 NAME	=	so_long.out
 
-SRCS	=	main.c	map_read.c	utils.c\
-			validate.c\
+SRCS	=	main.c		map_read.c	utils.c\
+			validate.c	game_init.c	events_handle.c\
 
 HEADER	=	so_long.h
 

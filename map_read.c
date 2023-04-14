@@ -68,10 +68,12 @@ int	ft_linecount(char *str)
 	{
 		if (str[i] == '\n')
 			count++;
-		if (str[i] == '\n' && str[i + 1] == '\r')
+		if (str[i] == '\n' && str[i + 1] == '\n')
 			break ;
 		i++;
 	}
+	if (str[i - 1] != '\n')
+		count++;
 	return (count);
 }
 
@@ -81,12 +83,12 @@ char	*ft_getline(char *str)
 	char	*line;
 
 	i = 0;
-	while (str[i] && str[i] != '\n' && str[i] != '\r')
+	while (str[i] != '\0' && str[i] != '\n' && str[i] != 2 && str[i] != 127)
 		i++;
 	line = malloc (i + 1);
 	line[i] = '\0';
 	i = 0;
-	while (*str && *str != '\n' && *str != '\r')
+	while (*str && *str != '\n' && *str != 2 && *str != 127)
 	{
 		line[i] = *str;
 		i++;
@@ -104,6 +106,7 @@ char	**ft_mapsplit(char	*str)
 	if (!str)
 		return (NULL);
 	size = ft_linecount(str);
+	// printf("%d - mapsize\n", size);
 	i = 0;
 	map = malloc (sizeof(char *) * (size + 1));
 	if (!map)
@@ -111,13 +114,15 @@ char	**ft_mapsplit(char	*str)
 		perror("Malloc Error. Memory allocaton failed");
 		exit(0);
 	}
+	while (*str && *str == '\n')
+			str++;
 	while (*str)
 	{
-		while (*str && (*str == '\n' || *str == '\r'))
-			str++;
 		if (*str && *str != '\n' && *str != '\r')
 			map[i++] = ft_getline(str);
-		while (*str && *str != '\n' && *str != '\r')
+		while (*str && *str != '\n')
+			str++;
+		if (*str == '\n')
 			str++;
 	}
 	map[i] = NULL;

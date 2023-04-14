@@ -34,7 +34,7 @@ typedef struct s_point
 
 typedef struct s_texture
 {
-	char	*paths[12];
+	char	*paths[21];
 	void	*in_wall;
 	void	*t_wall;
 	void	*l_wall;
@@ -46,7 +46,16 @@ typedef struct s_texture
 	void	*portal_on;
 	void	*portal_off;
 	void	*flask;
-	void	*player;
+	void	*player1;
+	void	*player2;
+	void	*player3;
+	void	*player4;
+	void	*youdie;
+	void	*die_mini;
+	void	*peak1;
+	void	*peak2;
+	void	*peak3;
+	void	*peak4;
 }	t_texture;
 
 typedef struct s_vars
@@ -62,7 +71,7 @@ typedef struct s_vars
 	t_point		player_pos;
 }		t_vars;
 
-char	*ft_chrvalid(char **map);
+char	*ft_chrvalid(char **map, int j, int i);
 char	*ft_wallvalid(t_vars *vars, char **map);
 char	*ft_rectangvalid(char **map);
 char	*ft_mapvalid(t_vars *vars, char **map);
@@ -76,5 +85,24 @@ char	**ft_mapsplit(char	*str);
 char	*ft_mapchr(char **map, int c);
 void	fill(t_vars *vars, char **map, t_point point);
 char	*ft_pathvalid(t_vars *vars, char **map);
+void	game_init(t_vars *vars);
+void	textures_init(t_vars vars, t_texture *textures);
+void	paths_init(t_texture *textures);
+int		maprender(t_vars vars, int x, int y);
+void	*select_txtr(int c, int x, int y, t_vars s);
+int		handle_keypress(int keycode, t_vars *vars);
+void	player_action(int keycode, t_vars *v);
+void	move_to(int	y, int x, t_vars *v);
+void	portal_turn(t_vars *vars, char **map);
+void	gameover(int res);
+int		move_check(int y, int x, t_vars *v);
 
 #endif
+
+// counter(struct game)
+// {
+// 	static int i;
+
+// 	i = 0;
+// 	mlx_put_str(itoa(i));
+// }
