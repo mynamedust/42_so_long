@@ -94,15 +94,7 @@ int		handle_keypress(int keycode, t_vars *vars);
 void	player_action(int keycode, t_vars *v);
 void	move_to(int	y, int x, t_vars *v);
 void	portal_turn(t_vars *vars, char **map);
-void	gameover(int res);
+void	gameover(t_vars *vars, int res);
 int		move_check(int y, int x, t_vars *v);
 
 #endif
-
-// counter(struct game)
-// {
-// 	static int i;
-
-// 	i = 0;
-// 	mlx_put_str(itoa(i));
-// }

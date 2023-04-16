@@ -8,13 +8,24 @@ int	move_check(int y, int x, t_vars *v)
 		return (1);
 	if (v->coins > 0)
 		return (0);
-	exit(0);
+	return (1);
 }
 
-void	gameover(int res)
+void	gameover(t_vars *vars, int res)
 {
 	if (res == 'w')
 		exit(0);
+	if (res == 'l')
+	{
+		if (vars->mapsize->y > 6 && vars->mapsize->x > 6)
+			mlx_put_image_to_window(vars->mlx, vars->win,
+					vars->textures.youdie, (vars->mapsize->x - 6) * 25,
+						(vars->mapsize->y - 6) * 25);
+		else
+			mlx_put_image_to_window(vars->mlx, vars->win,
+					vars->textures.die_mini, (vars->mapsize->x - 6) * 25,
+						(vars->mapsize->y - 6) * 25);
+	}
 	return ;
 }
 
@@ -57,9 +68,9 @@ void	move_to(int	y, int x, t_vars *v)
 			portal_turn(v, v->map);
 	}
 	if (v->map[y][x] == 'J')
-	{
-		gameover('w');
-	}
+		gameover(v, 'w');
+	if (v->map[y][x] == 'S')
+		gameover(v, 'l');
 	v->map[y][x] = 'U';
 	mlx_put_image_to_window(v->mlx, v->win,
 			v->textures.player1, v->x * 50, v->y * 50);
