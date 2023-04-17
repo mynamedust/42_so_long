@@ -7,7 +7,7 @@ char	*ft_chrvalid(char **map, int j, int i)
 	list = (t_chars){0};
 	while (map[i])
 	{
-		while (map[i][j])
+		while (map[i][j] && map[i])
 		{
 			if (map[i][j] == 'E')
 				list.e += 1;
@@ -15,9 +15,9 @@ char	*ft_chrvalid(char **map, int j, int i)
 				list.p += 1;
 			else if (map[i][j] == 'C')
 				list.c += 1;
-			else if (map[i][j] != '\0' && map[i][j] != '0' && map[i][j] != '1'
+			else if (map[i][j] && map[i][j] != '0' && map[i][j] != '1'
 				&& map[i][j] != 'S')
-				return ("Invalid input format.");
+					return ("Invalid input format.");
 			j++;
 		}
 		j = 0;

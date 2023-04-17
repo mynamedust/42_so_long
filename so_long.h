@@ -34,7 +34,7 @@ typedef struct s_point
 
 typedef struct s_texture
 {
-	char	*paths[21];
+	char	*paths[24];
 	void	*in_wall;
 	void	*t_wall;
 	void	*l_wall;
@@ -45,17 +45,11 @@ typedef struct s_texture
 	void	*back;
 	void	*portal_on;
 	void	*portal_off;
-	void	*flask;
-	void	*player1;
-	void	*player2;
-	void	*player3;
-	void	*player4;
+	void	*flask_s[4];
+	void	*pl_s[4];
 	void	*youdie;
 	void	*die_mini;
-	void	*peak1;
-	void	*peak2;
-	void	*peak3;
-	void	*peak4;
+	void	*peak_s[4];
 }	t_texture;
 
 typedef struct s_vars
@@ -66,6 +60,8 @@ typedef struct s_vars
 	int			coins;
 	int			x;
 	int			y;
+	int			die;
+	int			actions;
 	t_texture	textures;
 	t_point		mapsize;
 	t_point		player_pos;
@@ -96,5 +92,12 @@ void	move_to(int	y, int x, t_vars *v);
 void	portal_turn(t_vars *vars, char **map);
 void	gameover(t_vars *vars, int res);
 int		move_check(int y, int x, t_vars *v);
+char	*ft_itoa(int n);
+long int	ft_abs(long int num);
+int		ft_anim(t_vars *vars);
+void	map_clear(t_vars *vars, int i);
+void	image_clear(t_vars *vars);
+void 	exit_clear(t_vars *vars);
+void	*ft_calloc(size_t count, size_t size);
 
 #endif

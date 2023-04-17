@@ -20,8 +20,8 @@ int	ft_filelen(char *file)
 	if (fd == -1)
 		exit(0);
 	len = 0;
-	while (read(fd, &c, 1) > 0)
-		len++;
+	while (read(fd, &c, 1) > 0 && c && ((c >= 32 && c <= 127) || c == '\n'))
+		len++;	
 	close(fd);
 	return (len);
 }
@@ -39,6 +39,7 @@ char	*ft_mapread(char *file)
 		exit(0);
 	}
 	map = malloc(buffsize + 1);
+	map[buffsize] = '\0';
 	if (!map)
 	{
 		perror("Malloc Error. Memory allocaton failed");

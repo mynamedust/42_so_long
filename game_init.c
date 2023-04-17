@@ -2,7 +2,7 @@
 
 void	*select_txtr(int c, int x, int y, t_vars s)
 {
-	if (c == '5' || c == 'U' || c == 'H')
+	if (c == '5' || c == 'U' || c == 'H' || c == 'S')
 		return (s.textures.back);
 	if (c == 'J' && s.coins > 0)
 		return (s.textures.portal_off);
@@ -36,48 +36,19 @@ void	*select_txtr(int c, int x, int y, t_vars s)
 	return (s.textures.in_wall);
 }
 
-int	peak_anim(t_vars *vars)
-{
-	static int	ii;
-	
-	// if (ii % 2000 == 0)
-	// 	mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.back , 200, 200);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.peak1 , 700, 300);
-	if (ii % 8000 == 0)
-	{
-		mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.peak4 , 700, 300);
-		ii = 0;
-	}
-	else if (ii % 6000 == 0)
-		mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.peak3, 700, 300);
-	else if (ii % 4000 == 0)
-		mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.peak2, 700, 300);
-	else if (ii % 2000 == 0)
-		mlx_put_image_to_window(vars->mlx, vars->win, vars->textures.peak1, 700, 300);
-	ii++;
-	printf("%d - num\n", ii);
-	return (0);
-}
-
 int	maprender(t_vars vars, int x, int y)
 {
 	while (vars.map[y])
 	{
 		while (vars.map[y][x])
 		{
+			vars.x = x;
+			vars.y = y;
 			mlx_put_image_to_window(vars.mlx, vars.win,
 				select_txtr(vars.map[y][x], x, y, vars), 50 * x, 50 * y);
-			if (vars.map[y][x] == 'H')
-				mlx_put_image_to_window(vars.mlx, vars.win,
-					vars.textures.flask, 50 * x, 50 * y);
-			if (vars.map[y][x] == 'S')
-			{
-				mlx_loop_hook(vars.mlx, peak_anim, &vars);
-				printf("entry\n");
-			}
 			if (vars.map[y][x] == 'U')
 				mlx_put_image_to_window(vars.mlx, vars.win,
-					vars.textures.player1, 50 * x, 50 * y);
+					vars.textures.pl_s[0], 50 * x, 50 * y);
 			x++;
 		}
 		x = 0;
@@ -98,17 +69,20 @@ void	paths_init(t_texture *textures)
 	textures->paths[7] = "./textures/back.xpm";
 	textures->paths[8] = "./textures/portalon.xpm";
 	textures->paths[9] = "./textures/portaloff.xpm";
-	textures->paths[10] = "./textures/flask.xpm";
-	textures->paths[11] = "./textures/player1.xpm";
-	textures->paths[12] = "./textures/player2.xpm";
-	textures->paths[13] = "./textures/player3.xpm";
-	textures->paths[14] = "./textures/player4.xpm";
-	textures->paths[15] = "./textures/youdie.xpm";
-	textures->paths[16] = "./textures/die_mini.xpm";
-	textures->paths[17] = "./textures/peak1.xpm";
-	textures->paths[18] = "./textures/peak2.xpm";
-	textures->paths[19] = "./textures/peak3.xpm";
-	textures->paths[20] = "./textures/peak4.xpm";
+	textures->paths[10] = "./textures/flask1.xpm";
+	textures->paths[11] = "./textures/flask2.xpm";
+	textures->paths[12] = "./textures/flask3.xpm";
+	textures->paths[13] = "./textures/flask4.xpm";
+	textures->paths[14] = "./textures/player1.xpm";
+	textures->paths[15] = "./textures/player2.xpm";
+	textures->paths[16] = "./textures/player3.xpm";
+	textures->paths[17] = "./textures/player4.xpm";
+	textures->paths[18] = "./textures/youdie.xpm";
+	textures->paths[19] = "./textures/die_mini.xpm";
+	textures->paths[20] = "./textures/peak1.xpm";
+	textures->paths[21] = "./textures/peak2.xpm";
+	textures->paths[22] = "./textures/peak3.xpm";
+	textures->paths[23] = "./textures/peak4.xpm";
 }
 
 void	textures_init(t_vars vars, t_texture *textures)
@@ -136,27 +110,33 @@ void	textures_init(t_vars vars, t_texture *textures)
 			&img_wd, &img_hg);
 	textures->portal_off = mlx_xpm_file_to_image(vars.mlx, textures->paths[9],
 			&img_wd, &img_hg);
-	textures->flask = mlx_xpm_file_to_image(vars.mlx, textures->paths[10],
+	textures->flask_s[0] = mlx_xpm_file_to_image(vars.mlx, textures->paths[10],
 			&img_wd, &img_hg);
-	textures->player1 = mlx_xpm_file_to_image(vars.mlx, textures->paths[11],
+	textures->flask_s[1] = mlx_xpm_file_to_image(vars.mlx, textures->paths[11],
+		&img_wd, &img_hg);
+	textures->flask_s[2] = mlx_xpm_file_to_image(vars.mlx, textures->paths[12],
+		&img_wd, &img_hg);
+	textures->flask_s[3] = mlx_xpm_file_to_image(vars.mlx, textures->paths[13],
+		&img_wd, &img_hg);
+	textures->pl_s[0] = mlx_xpm_file_to_image(vars.mlx, textures->paths[14],
 			&img_wd, &img_hg);
-	textures->player2 = mlx_xpm_file_to_image(vars.mlx, textures->paths[12],
+	textures->pl_s[1] = mlx_xpm_file_to_image(vars.mlx, textures->paths[15],
 			&img_wd, &img_hg);
-	textures->player3 = mlx_xpm_file_to_image(vars.mlx, textures->paths[13],
+	textures->pl_s[2] = mlx_xpm_file_to_image(vars.mlx, textures->paths[16],
 			&img_wd, &img_hg);
-	textures->player4 = mlx_xpm_file_to_image(vars.mlx, textures->paths[14],
+	textures->pl_s[3] = mlx_xpm_file_to_image(vars.mlx, textures->paths[17],
 			&img_wd, &img_hg);
-	textures->youdie = mlx_xpm_file_to_image(vars.mlx, textures->paths[15],
+	textures->youdie = mlx_xpm_file_to_image(vars.mlx, textures->paths[18],
 			&img_wd, &img_hg);
-	textures->die_mini = mlx_xpm_file_to_image(vars.mlx, textures->paths[16],
+	textures->die_mini = mlx_xpm_file_to_image(vars.mlx, textures->paths[19],
 			&img_wd, &img_hg);
-	textures->peak1 = mlx_xpm_file_to_image(vars.mlx, textures->paths[17],
+	textures->peak_s[0] = mlx_xpm_file_to_image(vars.mlx, textures->paths[20],
 			&img_wd, &img_hg);
-	textures->peak2 = mlx_xpm_file_to_image(vars.mlx, textures->paths[18],
+	textures->peak_s[1] = mlx_xpm_file_to_image(vars.mlx, textures->paths[21],
 			&img_wd, &img_hg);
-	textures->peak3 = mlx_xpm_file_to_image(vars.mlx, textures->paths[19],
+	textures->peak_s[2] = mlx_xpm_file_to_image(vars.mlx, textures->paths[22],
 			&img_wd, &img_hg);
-	textures->peak4 = mlx_xpm_file_to_image(vars.mlx, textures->paths[20],
+	textures->peak_s[3] = mlx_xpm_file_to_image(vars.mlx, textures->paths[23],
 			&img_wd, &img_hg);
 }
 
@@ -164,6 +144,8 @@ void	game_init(t_vars *vars)
 {
 	vars->mlx = mlx_init();
 	vars->win = mlx_new_window(vars->mlx, vars->mapsize.x * 50, vars->mapsize.y * 50, "so_long");
+	vars->die = 0;
+	vars->actions = 0;
 	paths_init(&vars->textures);
 	textures_init(*vars, &vars->textures);
 	maprender(*vars, 0, 0);

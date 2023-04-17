@@ -14,18 +14,9 @@ int	move_check(int y, int x, t_vars *v)
 void	gameover(t_vars *vars, int res)
 {
 	if (res == 'w')
-		exit(0);
+		exit_clear(vars);
 	if (res == 'l')
-	{
-		if (vars->mapsize->y > 6 && vars->mapsize->x > 6)
-			mlx_put_image_to_window(vars->mlx, vars->win,
-					vars->textures.youdie, (vars->mapsize->x - 6) * 25,
-						(vars->mapsize->y - 6) * 25);
-		else
-			mlx_put_image_to_window(vars->mlx, vars->win,
-					vars->textures.die_mini, (vars->mapsize->x - 6) * 25,
-						(vars->mapsize->y - 6) * 25);
-	}
+		vars->die = 1;	
 	return ;
 }
 
@@ -56,6 +47,11 @@ void	portal_turn(t_vars *vars, char **map)
 
 void	move_to(int	y, int x, t_vars *v)
 {
+	char	*count;
+
+	count = ft_itoa(v->actions);
+	mlx_string_put(v->mlx, v->win, 0, 0, 0xFF00FF, count);
+	free(count);
 	v->map[v->y][v->x] = '5';
 	mlx_put_image_to_window(v->mlx, v->win,
 			v->textures.back, v->x * 50, v->y * 50);
@@ -73,11 +69,13 @@ void	move_to(int	y, int x, t_vars *v)
 		gameover(v, 'l');
 	v->map[y][x] = 'U';
 	mlx_put_image_to_window(v->mlx, v->win,
-			v->textures.player1, v->x * 50, v->y * 50);
+			v->textures.pl_s[0], v->x * 50, v->y * 50);
 }
 
 void	player_action(int keycode, t_vars *v)
 {
+	if (v->die == 1)
+		exit_clear(0);
 	if (keycode == 13 && move_check(v->y - 1, v->x, v))
 		move_to(v->y - 1, v->x, v);
     else if (keycode == 1 && move_check(v->y + 1, v->x, v))
