@@ -1,14 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almeliky <almeliky@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/18 14:40:23 by almeliky          #+#    #+#             */
+/*   Updated: 2023/04/18 14:40:23 by almeliky         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
-
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
 
 char	*ft_mapchr(char **map, int c)
 {
@@ -29,7 +31,7 @@ char	*ft_mapchr(char **map, int c)
 	return (NULL);
 }
 
-long int	ft_abs(long int num)
+long	ft_abs(long int num)
 {
 	if (num < 0)
 		num = -1 * num;
@@ -81,4 +83,16 @@ char	*ft_itoa(int n)
 		num %= i;
 	}
 	return (str);
+}
+
+void	ft_putstr(char *s)
+{
+	if (!s)
+		return ;
+	while (*s)
+	{
+		write(1, s, 1);
+		s++;
+	}
+	write(1, "\n", 1);
 }

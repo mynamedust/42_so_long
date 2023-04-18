@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   events_handle.c                                    :+:      :+:    :+:   */
+/*   events_handle_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: almeliky <almeliky@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/18 18:12:25 by almeliky          #+#    #+#             */
-/*   Updated: 2023/04/18 18:17:26 by almeliky         ###   ########.fr       */
+/*   Created: 2023/04/18 15:12:54 by almeliky          #+#    #+#             */
+/*   Updated: 2023/04/18 18:17:36 by almeliky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	gameover(t_vars *vars, int res)
 {
 	if (res == 'w')
 		exit_clear(vars);
+	if (res == 'l')
+		vars->die = 1;
 	return ;
 }
 
@@ -60,8 +62,9 @@ void	move_to(int y, int x, t_vars *v)
 	char	*count;
 
 	v->actions++;
+	mlx_put_image_to_window(v->mlx, v->win, v->textures.l_wall, 0, 0);
 	count = ft_itoa(v->actions);
-	ft_putstr(count);
+	mlx_string_put(v->mlx, v->win, 0, 0, 0xFF00FF, count);
 	free(count);
 	v->map[v->y][v->x] = '5';
 	mlx_put_image_to_window(v->mlx, v->win,
@@ -76,6 +79,8 @@ void	move_to(int y, int x, t_vars *v)
 	}
 	if (v->map[y][x] == 'J')
 		gameover(v, 'w');
+	if (v->map[y][x] == 'S')
+		gameover(v, 'l');
 	v->map[y][x] = 'U';
 	mlx_put_image_to_window(v->mlx, v->win,
 		v->textures.pl_s[0], v->x * 50, v->y * 50);

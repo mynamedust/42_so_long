@@ -1,36 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_read.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almeliky <almeliky@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/18 14:42:03 by almeliky          #+#    #+#             */
+/*   Updated: 2023/04/18 14:42:03 by almeliky         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
-int	ft_open(char *file)
-{
-	int	fd;
-
-	fd = open(file, O_RDONLY);
-	if (fd == -1)
-		perror("Open Error. Open failed on input file");
-	return (fd);
-}
-
-int	ft_filelen(char *file)
-{
-	int		len;
-	char	c;
-	int		fd;
-	
-	fd = ft_open(file);
-	if (fd == -1)
-		exit(0);
-	len = 0;
-	while (read(fd, &c, 1) > 0 && c && ((c >= 32 && c <= 127) || c == '\n'))
-		len++;	
-	close(fd);
-	return (len);
-}
-
-char	*ft_mapread(char *file)
+char	*ft_mapread(char *file, int buffsize, int fd)
 {
 	char	*map;
-	int		fd;
-	int		buffsize;
 
 	buffsize = ft_filelen(file);
 	if (buffsize <= 0)
@@ -98,17 +82,13 @@ char	*ft_getline(char *str)
 	return (line);
 }
 
-char	**ft_mapsplit(char	*str)
+char	**ft_mapsplit(char	*str, int size, int i)
 {
-	int		i;
-	int		size;
 	char	**map;
 
 	if (!str)
 		return (NULL);
 	size = ft_linecount(str);
-	// printf("%d - mapsize\n", size);
-	i = 0;
 	map = malloc (sizeof(char *) * (size + 1));
 	if (!map)
 	{

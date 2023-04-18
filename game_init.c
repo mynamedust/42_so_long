@@ -1,40 +1,16 @@
-#include "so_long.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   game_init.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almeliky <almeliky@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/18 14:55:29 by almeliky          #+#    #+#             */
+/*   Updated: 2023/04/18 18:20:15 by almeliky         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	*select_txtr(int c, int x, int y, t_vars s)
-{
-	if (c == '5' || c == 'U' || c == 'H' || c == 'S')
-		return (s.textures.back);
-	if (c == 'J' && s.coins > 0)
-		return (s.textures.portal_off);
-	if (c == 'J' && s.coins == 0)
-		return (s.textures.portal_on);
-	if (c == '1')
-	{
-		if (y == 0 && x != 0 && x != s.mapsize.x - 1)
-		{
-			if (s.map[y + 1][x] == '1')
-				return (s.textures.in_wall);
-			return (s.textures.t_wall);
-		}
-		if (y == s.mapsize.y - 1 && x != 0 && x != s.mapsize.x - 1)
-			return (s.textures.b_wall);
-		if (x == 0)
-		{
-			if (y == s.mapsize.y - 1)
-				return (s.textures.lb_wall);
-			return (s.textures.l_wall);
-		}
-		if (x == s.mapsize.x - 1)
-		{
-			if (y == s.mapsize.y - 1)
-				return (s.textures.rb_wall);
-			return (s.textures.r_wall);
-		}
-		if (s.map[y + 1][x] != '1')
-			return (s.textures.b_wall);
-	}
-	return (s.textures.in_wall);
-}
+#include "so_long.h"
 
 int	maprender(t_vars vars, int x, int y)
 {
@@ -46,6 +22,9 @@ int	maprender(t_vars vars, int x, int y)
 			vars.y = y;
 			mlx_put_image_to_window(vars.mlx, vars.win,
 				select_txtr(vars.map[y][x], x, y, vars), 50 * x, 50 * y);
+			if (vars.map[y][x] == 'H')
+				mlx_put_image_to_window(vars.mlx, vars.win,
+					vars.textures.flask_s[0], 50 * x, 50 * y);
 			if (vars.map[y][x] == 'U')
 				mlx_put_image_to_window(vars.mlx, vars.win,
 					vars.textures.pl_s[0], 50 * x, 50 * y);
@@ -85,65 +64,54 @@ void	paths_init(t_texture *textures)
 	textures->paths[23] = "./textures/peak4.xpm";
 }
 
+void	*img_init(t_vars vars, char *path)
+{
+	void	*img;
+	int		img_wd;
+	int		img_hg;
+
+	img = mlx_xpm_file_to_image(vars.mlx, path, &img_wd, &img_hg);
+	if (!img)
+	{
+		ft_putstr("Image initialization error.");
+		exit_clear(&vars);
+	}
+	return (img);
+}
+
 void	textures_init(t_vars vars, t_texture *textures)
 {
-	int	img_wd;
-	int	img_hg;
-
-	textures->in_wall = mlx_xpm_file_to_image(vars.mlx, textures->paths[0],
-			&img_wd, &img_hg);
-	textures->t_wall = mlx_xpm_file_to_image(vars.mlx, textures->paths[1],
-			&img_wd, &img_hg);
-	textures->l_wall = mlx_xpm_file_to_image(vars.mlx, textures->paths[2],
-			&img_wd, &img_hg);
-	textures->lb_wall = mlx_xpm_file_to_image(vars.mlx, textures->paths[3],
-			&img_wd, &img_hg);
-	textures->r_wall = mlx_xpm_file_to_image(vars.mlx, textures->paths[4],
-			&img_wd, &img_hg);
-	textures->rb_wall = mlx_xpm_file_to_image(vars.mlx, textures->paths[5],
-			&img_wd, &img_hg);
-	textures->b_wall = mlx_xpm_file_to_image(vars.mlx, textures->paths[6],
-			&img_wd, &img_hg);
-	textures->back = mlx_xpm_file_to_image(vars.mlx, textures->paths[7],
-			&img_wd, &img_hg);
-	textures->portal_on = mlx_xpm_file_to_image(vars.mlx, textures->paths[8],
-			&img_wd, &img_hg);
-	textures->portal_off = mlx_xpm_file_to_image(vars.mlx, textures->paths[9],
-			&img_wd, &img_hg);
-	textures->flask_s[0] = mlx_xpm_file_to_image(vars.mlx, textures->paths[10],
-			&img_wd, &img_hg);
-	textures->flask_s[1] = mlx_xpm_file_to_image(vars.mlx, textures->paths[11],
-		&img_wd, &img_hg);
-	textures->flask_s[2] = mlx_xpm_file_to_image(vars.mlx, textures->paths[12],
-		&img_wd, &img_hg);
-	textures->flask_s[3] = mlx_xpm_file_to_image(vars.mlx, textures->paths[13],
-		&img_wd, &img_hg);
-	textures->pl_s[0] = mlx_xpm_file_to_image(vars.mlx, textures->paths[14],
-			&img_wd, &img_hg);
-	textures->pl_s[1] = mlx_xpm_file_to_image(vars.mlx, textures->paths[15],
-			&img_wd, &img_hg);
-	textures->pl_s[2] = mlx_xpm_file_to_image(vars.mlx, textures->paths[16],
-			&img_wd, &img_hg);
-	textures->pl_s[3] = mlx_xpm_file_to_image(vars.mlx, textures->paths[17],
-			&img_wd, &img_hg);
-	textures->youdie = mlx_xpm_file_to_image(vars.mlx, textures->paths[18],
-			&img_wd, &img_hg);
-	textures->die_mini = mlx_xpm_file_to_image(vars.mlx, textures->paths[19],
-			&img_wd, &img_hg);
-	textures->peak_s[0] = mlx_xpm_file_to_image(vars.mlx, textures->paths[20],
-			&img_wd, &img_hg);
-	textures->peak_s[1] = mlx_xpm_file_to_image(vars.mlx, textures->paths[21],
-			&img_wd, &img_hg);
-	textures->peak_s[2] = mlx_xpm_file_to_image(vars.mlx, textures->paths[22],
-			&img_wd, &img_hg);
-	textures->peak_s[3] = mlx_xpm_file_to_image(vars.mlx, textures->paths[23],
-			&img_wd, &img_hg);
+	textures->in_wall = img_init(vars, textures->paths[0]);
+	textures->t_wall = img_init(vars, textures->paths[1]);
+	textures->l_wall = img_init(vars, textures->paths[2]);
+	textures->lb_wall = img_init(vars, textures->paths[3]);
+	textures->r_wall = img_init(vars, textures->paths[4]);
+	textures->rb_wall = img_init(vars, textures->paths[5]);
+	textures->b_wall = img_init(vars, textures->paths[6]);
+	textures->back = img_init(vars, textures->paths[7]);
+	textures->portal_on = img_init(vars, textures->paths[8]);
+	textures->portal_off = img_init(vars, textures->paths[9]);
+	textures->flask_s[0] = img_init(vars, textures->paths[10]);
+	textures->flask_s[1] = img_init(vars, textures->paths[11]);
+	textures->flask_s[2] = img_init(vars, textures->paths[12]);
+	textures->flask_s[3] = img_init(vars, textures->paths[13]);
+	textures->pl_s[0] = img_init(vars, textures->paths[14]);
+	textures->pl_s[1] = img_init(vars, textures->paths[15]);
+	textures->pl_s[2] = img_init(vars, textures->paths[16]);
+	textures->pl_s[3] = img_init(vars, textures->paths[17]);
+	textures->youdie = img_init(vars, textures->paths[18]);
+	textures->die_mini = img_init(vars, textures->paths[19]);
+	textures->peak_s[0] = img_init(vars, textures->paths[20]);
+	textures->peak_s[1] = img_init(vars, textures->paths[21]);
+	textures->peak_s[2] = img_init(vars, textures->paths[22]);
+	textures->peak_s[3] = img_init(vars, textures->paths[23]);
 }
 
 void	game_init(t_vars *vars)
 {
 	vars->mlx = mlx_init();
-	vars->win = mlx_new_window(vars->mlx, vars->mapsize.x * 50, vars->mapsize.y * 50, "so_long");
+	vars->win = mlx_new_window(vars->mlx, vars->mapsize.x * 50,
+			vars->mapsize.y * 50, "./so_long");
 	vars->die = 0;
 	vars->actions = 0;
 	paths_init(&vars->textures);

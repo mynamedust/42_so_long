@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validate.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almeliky <almeliky@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/18 14:36:04 by almeliky          #+#    #+#             */
+/*   Updated: 2023/04/18 14:36:04 by almeliky         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
 char	*ft_chrvalid(char **map, int j, int i)
 {
-	t_chars list;
+	t_chars	list;
 
 	list = (t_chars){0};
 	while (map[i])
@@ -15,9 +27,8 @@ char	*ft_chrvalid(char **map, int j, int i)
 				list.p += 1;
 			else if (map[i][j] == 'C')
 				list.c += 1;
-			else if (map[i][j] && map[i][j] != '0' && map[i][j] != '1'
-				&& map[i][j] != 'S')
-					return ("Invalid input format.");
+			else if (map[i][j] && map[i][j] != '0' && map[i][j] != '1')
+				return ("Invalid input format.");
 			j++;
 		}
 		j = 0;
@@ -28,13 +39,8 @@ char	*ft_chrvalid(char **map, int j, int i)
 	return (NULL);
 }
 
-char	*ft_wallvalid(t_vars *vars, char **map)
+char	*ft_wallvalid(t_vars *vars, char **map, int j, int i)
 {
-	int	j;
-	int	i;
-
-	i = 0;
-	j = 0;
 	while (map[i])
 	{
 		while (map[i][j])
@@ -80,25 +86,29 @@ char	*ft_rectangvalid(char **map)
 
 void	fill(t_vars *vars, char **map, t_point point)
 {
-	if (point.x < 0 || point.x >= ft_strlen(map[point.y]) || point.y < 0 || map[point.y] == NULL 
-		|| !(map[point.y][point.x] == 'C' || map[point.y][point.x] == '0'
-		|| map[point.y][point.x] == 'E' || map[point.y][point.x] == 'P'))
+	if (point.x < 0 || point.x >= ft_strlen(map[point.y]) || point.y < 0
+		|| map[point.y] == NULL || !(map[point.y][point.x] == 'C'
+		|| map[point.y][point.x] == '0' || map[point.y][point.x] == 'E'
+		|| map[point.y][point.x] == 'P'))
 		return ;
 	if (map[point.y][point.x] == 'C')
 		vars->coins++;
 	map[point.y][point.x] += 5;
+	if (map[point.y][point.x] == 'J')
+		return ;
 	fill(vars, map, (t_point){point.x - 1, point.y});
 	fill(vars, map, (t_point){point.x, point.y - 1});
 	fill(vars, map, (t_point){point.x, point.y + 1});
 	fill(vars, map, (t_point){point.x + 1, point.y});
 }
 
-char	*ft_pathvalid(t_vars *vars,char **map)
+char	*ft_pathvalid(t_vars *vars, char **map)
 {
 	int		e;
 	t_point	p;
 
 	e = 0;
+	vars->bonus = 0;
 	p = (t_point){0};
 	while (map[p.y])
 	{
@@ -116,20 +126,5 @@ char	*ft_pathvalid(t_vars *vars,char **map)
 	fill(vars, map, p);
 	if (ft_mapchr(map, 'C') || ft_mapchr(map, 'E'))
 		return ("Path validation failed");
-	return (NULL);
-}
-
-char	*ft_mapvalid(t_vars *vars, char	**map)
-{
-	char	*message;
-	
-	if ((message = ft_chrvalid(map, 0, 0)) != NULL)
-		return (message);
-	if ((message = ft_wallvalid(vars, map)) != NULL)
-		return (message);
-	if ((message = ft_rectangvalid(map)) != NULL)
-		return (message);
-	if ((message = ft_pathvalid(vars, map)) != NULL)
-		return (message);
 	return (NULL);
 }
